@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
 import MapContainer from './Map'
-import {InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
-import $ from  'jquery'
 
 
 class LocationList extends Component {
-
     state={
         query: '',
         showingMarker: this.props.locations,
@@ -18,8 +15,10 @@ class LocationList extends Component {
     }
 
     renderMarker = () => {
-
+      this.refs.showMarker.onMarkerClick()
     }
+
+
 
     render() {
         let showingLocations
@@ -33,6 +32,7 @@ class LocationList extends Component {
         }
 
         showingLocations.sort(sortBy('title'))
+
 
         return (
             <div className="locations" >
@@ -52,14 +52,13 @@ class LocationList extends Component {
                   <ul>
                     {showingLocations.map((location) => (
                         <li key={location.title} >
-                            <button className="location" id={location.id} >{location.title}</button>
+                            <button className="location" onClick={this.renderMarker} >{location.title}</button>
                         </li>
                     ))}
                   </ul>
                 </div>
               </div>
-
-              <MapContainer locations={this.state.showingMarker} showingmarker={this.state.showingMarker}/>
+              <MapContainer locations={this.state.showingMarker} ref="showMarker" />
             </div>
         )
     }

@@ -16,6 +16,10 @@ ul {
     padding-left: 1em;
 }
 
+#root {
+    height: 100%;
+}
+
 .app {
     height: 100%;
     display: flex;
@@ -26,13 +30,13 @@ ul {
     background-color: #1860A6;
     color: white;
     height: 100%;
-    width: 20%;
+    width: 100%;
     display: flex;
-    position: absolute;
 }
 
 .pannel {
-    width: 100%;
+    width: 20%;
+    height: 100%;
 }
 
 .filter {
@@ -84,22 +88,14 @@ ul {
 }
 
 @media screen and (max-width: 1200px) {
-    .locations {
-    background-color: #1860A6;
-    color: white;
-    height: 100%;
-    width: 30%;
-    display: flex;
+    .pannel {
+        width: 30%;
     }
 }
 
 @media screen and (max-width: 500px) {
-    .locations {
-    background-color: #1860A6;
-    color: white;
-    height: 100%;
-    width: 35%;
-    display: flex;
+    .pannel {
+        width: 35%;
     }
 
     .header {

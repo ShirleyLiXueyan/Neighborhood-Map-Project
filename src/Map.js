@@ -54,8 +54,8 @@ class MapContainer extends Component {
 
   render() {
     const style = {
-      width: '80vw',
-      height: '100vh',
+      width: '100%',
+      height: '100%'
     }
     return (
       <Map
@@ -68,7 +68,7 @@ class MapContainer extends Component {
           zoom={14}
           onClick={this.onMapClicked}
       >
-          {this.props.showingmarker.map((location) => (
+          {this.props.locations.map((location) => (
               <Marker
                 animation={this.props.google.maps.Animation.DROP}
                 key={location.id}
