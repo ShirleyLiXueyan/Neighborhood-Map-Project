@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
-import Map from './Map'
+import MapContainer from './Map'
+import {InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
+import $ from  'jquery'
+
 
 class LocationList extends Component {
 
-
-
     state={
         query: '',
-        showingMarker: this.props.locations
+        showingMarker: this.props.locations,
     }
 
     updateQuery = (query) => {
         this.setState({ query: query.trim() })
     }
 
+    renderMarker = () => {
+
+    }
 
     render() {
         let showingLocations
@@ -36,6 +40,7 @@ class LocationList extends Component {
                 <h1 className="header">Chengdu Locations</h1>
                 <div className="filter">
                     <input
+                      aria-label="location-input"
                       id="filter-input"
                       type="textbox"
                       placeholder="filte a location"
@@ -46,14 +51,15 @@ class LocationList extends Component {
                 <div className="location-list">
                   <ul>
                     {showingLocations.map((location) => (
-                        <li key={location.title} type="button"  className="location">
-                            {location.title}
+                        <li key={location.title} >
+                            <button className="location" id={location.id} >{location.title}</button>
                         </li>
                     ))}
                   </ul>
                 </div>
               </div>
-              <Map locations={this.state.showingMarker} showingmarker={this.state.showingMarker}/>
+
+              <MapContainer locations={this.state.showingMarker} showingmarker={this.state.showingMarker}/>
             </div>
         )
     }

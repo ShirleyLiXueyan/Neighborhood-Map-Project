@@ -12,9 +12,12 @@ var getWiki = ((marker,callback) => {
         url: wikiUrl,
         dataType:'jsonp',
         success: function( response ) {
-            var content = response[1];
+            var content = response[0];
             var url = 'https://en.wikipedia.org/wiki/' + content;
-            $wikiElem.append('<h1 className="info">' + url + '</h1>');
+            $wikiElem.append('<a class="info" href=' + url + '>' +content + '</a></p>');
+        },
+        error: function() {
+            $wikiElem.append('<p class="error-info">Sorry, error!</p>');
         }
     })
 
@@ -52,7 +55,7 @@ class MapContainer extends Component {
   render() {
     const style = {
       width: '80vw',
-      height: '100vh'
+      height: '100vh',
     }
     return (
       <Map
@@ -67,6 +70,7 @@ class MapContainer extends Component {
       >
           {this.props.showingmarker.map((location) => (
               <Marker
+                animation={this.props.google.maps.Animation.DROP}
                 key={location.id}
                 onClick={this.onMarkerClick}
                 title={location.title}
