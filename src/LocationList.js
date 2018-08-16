@@ -8,16 +8,18 @@ class LocationList extends Component {
     state={
         query: '',
         showingMarker: this.props.locations,
+        clickList: {}
     }
+
 
     updateQuery = (query) => {
         this.setState({ query: query.trim() })
     }
 
-    renderMarker = () => {
-      this.refs.showMarker.onMarkerClick()
-    }
 
+    clickList = (list) => {
+      this.setState({ clickList: list })
+    }
 
 
     render() {
@@ -52,13 +54,13 @@ class LocationList extends Component {
                   <ul>
                     {showingLocations.map((location) => (
                         <li key={location.title} >
-                            <button className="location" onClick={this.renderMarker} >{location.title}</button>
+                            <button className="location" onClick={() => this.clickList(location)}>{location.title}</button>
                         </li>
                     ))}
                   </ul>
                 </div>
               </div>
-              <MapContainer locations={this.state.showingMarker} ref="showMarker" />
+              <MapContainer locations={this.state.showingMarker} showMarker={this.state.clickList} ref="Map" />
             </div>
         )
     }

@@ -31,6 +31,22 @@ class MapContainer extends Component {
     selectedPlace: {},
   }
 
+  componentWillReceiveProps(marker) {
+    console.log(marker.locations)
+    console.log(marker.showMarker)
+    for(var i= 0; i < marker.locations.length; i++) {
+      if( marker.showMarker === marker.locations[i]) {
+          let showMarker = marker.locations[i]
+          this.setState({
+            activeMarker: showMarker,
+            showingInfoWindow: true
+          })
+      }
+    }
+  }
+
+
+
 
   onMapClicked = (props) => {
     if (this.state.showingInfoWindow) {
@@ -43,7 +59,6 @@ class MapContainer extends Component {
 
   onMarkerClick = (props, marker, e) => {
     this.setState({
-      selectedPlace: props,
       activeMarker: marker,
       showingInfoWindow: true,
       selectedPlace: marker,
@@ -55,10 +70,12 @@ class MapContainer extends Component {
   render() {
     const style = {
       width: '100%',
-      height: '100%'
+      height: '100%',
+      overflow: 'hidden'
     }
     return (
       <Map
+          ref="map"
           google={this.props.google}
           style={style}
           initialCenter={{
@@ -70,6 +87,7 @@ class MapContainer extends Component {
       >
           {this.props.locations.map((location) => (
               <Marker
+                ref="marker"
                 animation={this.props.google.maps.Animation.DROP}
                 key={location.id}
                 onClick={this.onMarkerClick}
@@ -78,6 +96,7 @@ class MapContainer extends Component {
           ))}
 
           <InfoWindow
+            ref="window"
             onOpen={this.windowHasOpened}
             onClose={this.windowHasClosed}
             marker={this.state.activeMarker}

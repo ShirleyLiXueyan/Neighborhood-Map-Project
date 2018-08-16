@@ -1,11 +1,13 @@
 html {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html, body {
+    position: relative;
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 ul li{
@@ -23,7 +25,6 @@ ul {
 .app {
     height: 100%;
     display: flex;
-
 }
 
 .locations {
@@ -89,12 +90,14 @@ ul {
 
 @media screen and (max-width: 1200px) {
     .pannel {
+        height: 100%;
         width: 30%;
     }
 }
 
 @media screen and (max-width: 500px) {
     .pannel {
+        height: 100%;
         width: 35%;
     }
 
