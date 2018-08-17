@@ -4,6 +4,7 @@ import sortBy from 'sort-by'
 import MapContainer from './Map'
 
 
+
 class LocationList extends Component {
     state={
         query: '',
