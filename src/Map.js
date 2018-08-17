@@ -12,6 +12,7 @@ class MapContainer extends Component {
     showingInfoWindow: false,
     activeMarker: {},
     selectedPlace: {},
+    animation: this.props.google.maps.Animation.DROP
   }
 
   getWiki = (marker,callback) => {
@@ -36,7 +37,6 @@ class MapContainer extends Component {
     if( marker.showMarker !== this.props.showMarker) {
         const markers = this.refs
         const newMarker = markers[marker.showMarker.title].marker
-        console.log(markers)
         for( var m in markers ) {
           markers[m].marker.setAnimation(null)
         }
@@ -58,6 +58,10 @@ class MapContainer extends Component {
         showingInfoWindow: false,
         activeMarker: null
       })
+      const markers = this.refs
+      for( var m in markers ) {
+        markers[m].marker.setAnimation(null)
+      }
     }
   }
 
@@ -66,6 +70,10 @@ class MapContainer extends Component {
       activeMarker: marker,
       showingInfoWindow: true,
     })
+    const markers = this.refs
+    for( var m in markers ) {
+        markers[m].marker.setAnimation(null)
+    }
     this.getWiki(marker)
   }
 
@@ -89,7 +97,7 @@ class MapContainer extends Component {
           {this.props.locations.map((location) => (
               <Marker
                 ref={location.title}
-                animation={this.props.google.maps.Animation.DROP}
+                animation={this.state.animation}
                 key={location.title}
                 onClick={this.onMarkerClick}
                 title={location.title}
