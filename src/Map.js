@@ -11,24 +11,27 @@ class MapContainer extends Component {
   state = {
     showingInfoWindow: false,
     activeMarker: {},
-    selectedPlace: {},
+    selectedPlace: null,
+    link: null,
     animation: this.props.google.maps.Animation.DROP
   }
 
   getWiki = (marker,callback) => {
-      var $wikiElem = $('#infowindow');
-      var wikiUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + marker.title + "&format=json&callback=wikiCallback";
-
+      let wikiUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + marker.title + "&format=json&callback=wikiCallback";
+      let _this = this;
+      console.log(this.state.selectedPlace)
        $.ajax({
           url: wikiUrl,
           dataType:'jsonp',
           success: function( response ) {
               var content = response[0];
               var url = 'https://en.wikipedia.org/wiki/' + content;
-              $wikiElem.append('<a class="info" href=' + url + '>' +content + '</a></p>');
+              _this.setState({selectedPlace: content});
+              _this.setState({link: url})
+              console.log(_this.state.selectedPlace)
           },
           error: function() {
-              $wikiElem.append('<p class="error-info">Sorry, error!</p>');
+              _this.setState({selectedPlace: "Error"})
           }
       })
   }
@@ -37,6 +40,7 @@ class MapContainer extends Component {
     if( marker.showMarker !== this.props.showMarker) {
         const markers = this.refs
         const newMarker = markers[marker.showMarker.title].marker
+        this.getWiki(newMarker)
         for( var m in markers ) {
           markers[m].marker.setAnimation(null)
         }
@@ -44,9 +48,8 @@ class MapContainer extends Component {
         this.setState({
           activeMarker: newMarker,
           showingInfoWindow: true,
-          selectedPlace: marker.showMarker
         })
-        this.getWiki(newMarker)
+
     }
   }
 
@@ -108,8 +111,11 @@ class MapContainer extends Component {
             onOpen={this.windowHasOpened}
             onClose={this.windowHasClosed}
             marker={this.state.activeMarker}
-            visible={this.state.showingInfoWindow}>
+            visible={this.state.showingInfoWindow}
+            content={this.state.selectedPlace}
+            link={this.state.link}>
               <div id="infowindow">
+                <a href={this.props.link} className="info">{this.props.content}</a>
               </div>
           </InfoWindow>
       </Map>
