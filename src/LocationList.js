@@ -60,7 +60,7 @@ class LocationList extends Component {
                   </ul>
                 </div>
               </div>
-              <MapContainer locations={this.state.showingMarker} showMarker={this.state.clickList} ref="Map" />
+              <MapContainer locations={this.state.showingMarker} showMarker={this.state.clickList} />
             </div>
         )
     }

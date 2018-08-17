@@ -4,24 +4,7 @@ import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import $ from  'jquery'
 
 
-var getWiki = ((marker,callback) => {
-    var $wikiElem = $('#infowindow');
-    var wikiUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + marker.title + "&format=json&callback=wikiCallback";
 
-     $.ajax({
-        url: wikiUrl,
-        dataType:'jsonp',
-        success: function( response ) {
-            var content = response[0];
-            var url = 'https://en.wikipedia.org/wiki/' + content;
-            $wikiElem.append('<a class="info" href=' + url + '>' +content + '</a></p>');
-        },
-        error: function() {
-            $wikiElem.append('<p class="error-info">Sorry, error!</p>');
-        }
-    })
-
-});
 
 class MapContainer extends Component {
 
@@ -31,20 +14,41 @@ class MapContainer extends Component {
     selectedPlace: {},
   }
 
-  componentWillReceiveProps(marker) {
-    console.log(marker.locations)
-    console.log(marker.showMarker)
-    for(var i= 0; i < marker.locations.length; i++) {
-      if( marker.showMarker === marker.locations[i]) {
-          let showMarker = marker.locations[i]
-          this.setState({
-            activeMarker: showMarker,
-            showingInfoWindow: true
-          })
-      }
-    }
+  getWiki = (marker,callback) => {
+      var $wikiElem = $('#infowindow');
+      var wikiUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + marker.title + "&format=json&callback=wikiCallback";
+
+       $.ajax({
+          url: wikiUrl,
+          dataType:'jsonp',
+          success: function( response ) {
+              var content = response[0];
+              var url = 'https://en.wikipedia.org/wiki/' + content;
+              $wikiElem.append('<a class="info" href=' + url + '>' +content + '</a></p>');
+          },
+          error: function() {
+              $wikiElem.append('<p class="error-info">Sorry, error!</p>');
+          }
+      })
   }
 
+  componentWillReceiveProps(marker) {
+    if( marker.showMarker !== this.props.showMarker) {
+        const markers = this.refs
+        const newMarker = markers[marker.showMarker.title].marker
+        console.log(markers)
+        for( var m in markers ) {
+          markers[m].marker.setAnimation(null)
+        }
+        newMarker.setAnimation(this.props.google.maps.Animation.BOUNCE)
+        this.setState({
+          activeMarker: newMarker,
+          showingInfoWindow: true,
+          selectedPlace: marker.showMarker
+        })
+        this.getWiki(newMarker)
+    }
+  }
 
 
 
@@ -61,11 +65,9 @@ class MapContainer extends Component {
     this.setState({
       activeMarker: marker,
       showingInfoWindow: true,
-      selectedPlace: marker,
     })
-    getWiki(marker)
+    this.getWiki(marker)
   }
-
 
   render() {
     const style = {
@@ -75,7 +77,6 @@ class MapContainer extends Component {
     }
     return (
       <Map
-          ref="map"
           google={this.props.google}
           style={style}
           initialCenter={{
@@ -83,20 +84,19 @@ class MapContainer extends Component {
             lng: 104.071957
           }}
           zoom={14}
-          onClick={this.onMapClicked}
-      >
+          onClick={this.onMapClicked}>
+
           {this.props.locations.map((location) => (
               <Marker
-                ref="marker"
+                ref={location.title}
                 animation={this.props.google.maps.Animation.DROP}
-                key={location.id}
+                key={location.title}
                 onClick={this.onMarkerClick}
                 title={location.title}
                 position={location.location} />
           ))}
 
           <InfoWindow
-            ref="window"
             onOpen={this.windowHasOpened}
             onClose={this.windowHasClosed}
             marker={this.state.activeMarker}
@@ -104,7 +104,6 @@ class MapContainer extends Component {
               <div id="infowindow">
               </div>
           </InfoWindow>
-
       </Map>
     );
   }
