@@ -40,6 +40,19 @@ ul {
     height: 100%;
 }
 
+.nav {
+    display: none;
+    background-color: #1860A6;
+    font-size: 30px;
+    text-align: center;
+    width: 44px;
+    height: 44px;
+}
+
+.close {
+    color: white;
+}
+
 .filter {
     display: flex;
     width: 100%;

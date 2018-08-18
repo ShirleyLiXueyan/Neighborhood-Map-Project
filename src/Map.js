@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import $ from  'jquery'
-
-
+require('es6-promise').polyfill()
+require('isomorphic-fetch')
 
 
 class MapContainer extends Component {
@@ -19,7 +19,7 @@ class MapContainer extends Component {
   getWiki = (marker,callback) => {
       let wikiUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + marker.title + "&format=json&callback=wikiCallback";
       let _this = this;
-      console.log(this.state.selectedPlace)
+
        $.ajax({
           url: wikiUrl,
           dataType:'jsonp',
@@ -31,7 +31,10 @@ class MapContainer extends Component {
               console.log(_this.state.selectedPlace)
           },
           error: function() {
-              _this.setState({selectedPlace: "Error"})
+              _this.setState({
+                selectedPlace: "Sorry! Something Wrong!",
+                link: null
+              })
           }
       })
   }
@@ -40,7 +43,6 @@ class MapContainer extends Component {
     if( marker.showMarker !== this.props.showMarker) {
         const markers = this.refs
         const newMarker = markers[marker.showMarker.title].marker
-        this.getWiki(newMarker)
         for( var m in markers ) {
           markers[m].marker.setAnimation(null)
         }
@@ -49,6 +51,7 @@ class MapContainer extends Component {
           activeMarker: newMarker,
           showingInfoWindow: true,
         })
+        this.getWiki(newMarker)
 
     }
   }
@@ -111,11 +114,9 @@ class MapContainer extends Component {
             onOpen={this.windowHasOpened}
             onClose={this.windowHasClosed}
             marker={this.state.activeMarker}
-            visible={this.state.showingInfoWindow}
-            content={this.state.selectedPlace}
-            link={this.state.link}>
+            visible={this.state.showingInfoWindow}>
               <div id="infowindow">
-                <a href={this.props.link} className="info">{this.props.content}</a>
+                <a href={this.state.link} className="info">{this.state.selectedPlace}</a>
               </div>
           </InfoWindow>
       </Map>
